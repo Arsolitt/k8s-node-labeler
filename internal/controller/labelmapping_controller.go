@@ -79,10 +79,7 @@ func (r *LabelMappingReconciler) Reconcile(ctx context.Context, req ctrl.Request
 
 		// Проверяем, соответствует ли нода селектору
 		if !r.nodeMatchesSelector(node, labelMapping.Spec.NodeSelector) {
-			// Если нода не соответствует селектору, удаляем лейблы
-			if r.removeLabelsFromNode(ctx, node, labelMapping.Spec.Labels) {
-				labeledNodes++
-			}
+			// Если нода не соответствует селектору, пропускаем её
 			continue
 		}
 
@@ -185,20 +182,27 @@ func (r *LabelMappingReconciler) addLabelsToNode(ctx context.Context, node *core
 	hasChanges := false
 	for key, value := range labels {
 		if currentValue, exists := node.Labels[key]; !exists || currentValue != value {
-			node.Labels[key] = value
 			hasChanges = true
+			break
 		}
 	}
 
-	if hasChanges {
-		if err := r.Update(ctx, node); err != nil {
-			log.FromContext(ctx).Error(err, "Не удалось обновить лейблы на ноде", "node", node.Name)
-			return false
-		}
-		log.FromContext(ctx).Info("Добавлены лейблы на ноду", "node", node.Name, "labels", labels)
+	if !hasChanges {
+		return false
 	}
 
-	return hasChanges
+	patch := client.MergeFrom(node.DeepCopy())
+	for key, value := range labels {
+		node.Labels[key] = value
+	}
+
+	if err := r.Patch(ctx, node, patch); err != nil {
+		log.FromContext(ctx).Error(err, "Не удалось обновить лейблы на ноде", "node", node.Name)
+		return false
+	}
+	log.FromContext(ctx).Info("Добавлены лейблы на ноду", "node", node.Name, "labels", labels)
+
+	return true
 }
 
 // removeLabelsFromNode удаляет лейблы с ноды, возвращает true если были изменения
@@ -210,20 +214,27 @@ func (r *LabelMappingReconciler) removeLabelsFromNode(ctx context.Context, node 
 	hasChanges := false
 	for key := range labels {
 		if _, exists := node.Labels[key]; exists {
-			delete(node.Labels, key)
 			hasChanges = true
+			break
 		}
 	}
 
-	if hasChanges {
-		if err := r.Update(ctx, node); err != nil {
-			log.FromContext(ctx).Error(err, "Не удалось удалить лейблы с ноды", "node", node.Name)
-			return false
-		}
-		log.FromContext(ctx).Info("Удалены лейблы с ноды", "node", node.Name, "labels", labels)
+	if !hasChanges {
+		return false
 	}
 
-	return hasChanges
+	patch := client.MergeFrom(node.DeepCopy())
+	for key := range labels {
+		delete(node.Labels, key)
+	}
+
+	if err := r.Patch(ctx, node, patch); err != nil {
+		log.FromContext(ctx).Error(err, "Не удалось удалить лейблы с ноды", "node", node.Name)
+		return false
+	}
+	log.FromContext(ctx).Info("Удалены лейблы с ноды", "node", node.Name, "labels", labels)
+
+	return true
 }
 
 // SetupWithManager настраивает контроллер с Manager
