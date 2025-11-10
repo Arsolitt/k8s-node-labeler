@@ -1,0 +1,19 @@
+apiVersion: labeler.arsolitt.tech/v1alpha1
+kind: LabelMapping
+metadata:
+  name: worker-nodes-ready-labeler
+spec:
+  # Этот маппинг применяется только к worker нодам
+  nodeSelector:
+    node-role.kubernetes.io/worker: ""
+  
+  # Проверяем, что worker нода готова
+  conditions:
+    - type: NodeReady
+      status: "True"
+  
+  # Добавляем специфичные лейблы для готовых worker нод
+  labels:
+    worker-ready: "true"
+    can-schedule-workloads: "true"
+

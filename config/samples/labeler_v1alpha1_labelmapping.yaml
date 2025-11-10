@@ -1,0 +1,21 @@
+apiVersion: labeler.arsolitt.tech/v1alpha1
+kind: LabelMapping
+metadata:
+  name: ready-nodes-labeler
+spec:
+  # nodeSelector используется для выбора нод (опционально)
+  # Если не указан, применяется ко всем нодам
+  nodeSelector:
+    kubernetes.io/os: linux
+  
+  # Условия, которым должна соответствовать нода
+  conditions:
+    - type: NodeReady
+      status: "True"
+  
+  # Лейблы, которые будут добавлены, если нода соответствует условиям,
+  # и удалены, если не соответствует
+  labels:
+    node-status: ready
+    workload-ready: "true"
+

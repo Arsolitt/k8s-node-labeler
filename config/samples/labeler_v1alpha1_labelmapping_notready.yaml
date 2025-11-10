@@ -1,0 +1,18 @@
+apiVersion: labeler.arsolitt.tech/v1alpha1
+kind: LabelMapping
+metadata:
+  name: notready-nodes-labeler
+spec:
+  # Этот маппинг применяется ко всем нодам (селектор не указан)
+  
+  # Условия для нод со статусом NotReady
+  conditions:
+    - type: NodeReady
+      status: "False"
+  
+  # Лейблы для нод, которые не готовы
+  labels:
+    node-status: not-ready
+    workload-ready: "false"
+    maintenance-mode: "true"
+

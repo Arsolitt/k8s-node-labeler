@@ -1,0 +1,7 @@
+## Append samples of your project ##
+resources:
+- labeler_v1alpha1_labelmapping.yaml
+- labeler_v1alpha1_labelmapping_notready.yaml
+- labeler_v1alpha1_labelmapping_worker.yaml
+# +kubebuilder:scaffold:manifestskustomizesamples
+
