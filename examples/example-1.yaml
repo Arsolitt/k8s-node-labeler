@@ -1,0 +1,14 @@
+apiVersion: labeler.arsolitt.tech/v1alpha1
+kind: LabelMapping
+metadata:
+  name: example-1
+spec:
+  nodeSelector:
+    kubernetes.io/os: linux
+
+  conditions:
+    - type: NodeReady
+      status: "True"
+
+  labels:
+    workload-ready: "true"
