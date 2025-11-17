@@ -29,16 +29,16 @@ A Kubernetes controller that automatically manages node labels based on node con
 
 ```bash
 # Install all resources (CRD, RBAC, Controller)
-kubectl apply -f https://raw.githubusercontent.com/Arsolitt/k8s-node-labeler/main/dist/install.yaml -n node-labeler
+kubectl apply -f https://raw.githubusercontent.com/Arsolitt/k8s-node-labeler/main/dist/install.yaml
 
 # Verify the controller is running
-kubectl get pods -n node-labeler -l app.kubernetes.io/name=k8s-node-labeler
+kubectl get pods -n k8s-node-labeler-system -l app.kubernetes.io/name=k8s-node-labeler
 ```
 
 ### Uninstall
 
 ```bash
-kubectl delete -f https://raw.githubusercontent.com/Arsolitt/k8s-node-labeler/main/dist/install.yaml -n node-labeler
+kubectl delete -f https://raw.githubusercontent.com/Arsolitt/k8s-node-labeler/main/dist/install.yaml -n k8s-node-labeler-system
 ```
 
 ## Usage
@@ -152,7 +152,7 @@ kubectl describe labelmapping ready-nodes-labeler
 ### Check Controller Logs
 
 ```bash
-kubectl logs -n node-labeler -l app.kubernetes.io/name=k8s-node-labeler -f
+kubectl logs -n k8s-node-labeler-system -l app.kubernetes.io/name=k8s-node-labeler -f
 ```
 
 ### View Applied Labels on Nodes
@@ -255,12 +255,12 @@ kustomize build config/default > dist/install.yaml
 
 2. Verify the controller is running:
    ```bash
-   kubectl get pods -n node-labeler -l app.kubernetes.io/name=k8s-node-labeler
+   kubectl get pods -n k8s-node-labeler-system -l app.kubernetes.io/name=k8s-node-labeler
    ```
 
 3. Check controller logs for errors:
    ```bash
-   kubectl logs -n node-labeler -l app.kubernetes.io/name=k8s-node-labeler
+   kubectl logs -n k8s-node-labeler-system -l app.kubernetes.io/name=k8s-node-labeler
    ```
 
 4. Ensure nodes match the `nodeSelector` (if specified):
@@ -273,8 +273,8 @@ kustomize build config/default > dist/install.yaml
 Check the logs and events:
 
 ```bash
-kubectl logs -n node-labeler -l app.kubernetes.io/name=k8s-node-labeler --previous
-kubectl get events -n node-labeler --sort-by='.lastTimestamp'
+kubectl logs -n k8s-node-labeler-system -l app.kubernetes.io/name=k8s-node-labeler --previous
+kubectl get events -n k8s-node-labeler-system --sort-by='.lastTimestamp'
 ```
 
 ### Permission Issues
@@ -282,7 +282,7 @@ kubectl get events -n node-labeler --sort-by='.lastTimestamp'
 Verify RBAC resources are created:
 
 ```bash
-kubectl get clusterrole,clusterrolebinding,serviceaccount -n node-labeler | grep node-labeler
+kubectl get clusterrole,clusterrolebinding,serviceaccount -n k8s-node-labeler-system | grep node-labeler
 ```
 
 ## License
