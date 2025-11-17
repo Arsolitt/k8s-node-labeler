@@ -12,7 +12,8 @@ metadata:
 spec:
   podSelector:
     matchLabels:
-      control-plane: controller-manager
+      app.kubernetes.io/name: k8s-node-labeler
+      app.kubernetes.io/component: controller
   policyTypes:
     - Ingress
   ingress:
