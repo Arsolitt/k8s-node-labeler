@@ -29,7 +29,7 @@ A Kubernetes controller that automatically manages node labels based on node con
 
 ```bash
 # Install all resources (CRD, RBAC, Controller)
-kubectl apply -f https://raw.githubusercontent.com/Arsolitt/k8s-node-labeler/main/dist/install.yaml
+kubectl apply -f https://raw.githubusercontent.com/Arsolitt/k8s-node-labeler/refs/tags/v0.0.2/dist/install.yaml
 
 # Verify the controller is running
 kubectl get pods -n k8s-node-labeler-system -l app.kubernetes.io/name=k8s-node-labeler
@@ -38,7 +38,7 @@ kubectl get pods -n k8s-node-labeler-system -l app.kubernetes.io/name=k8s-node-l
 ### Uninstall
 
 ```bash
-kubectl delete -f https://raw.githubusercontent.com/Arsolitt/k8s-node-labeler/main/dist/install.yaml -n k8s-node-labeler-system
+kubectl delete -f https://raw.githubusercontent.com/Arsolitt/k8s-node-labeler/refs/tags/v0.0.2/dist/install.yaml -n k8s-node-labeler-system
 ```
 
 ## Usage
@@ -240,7 +240,7 @@ make run
 make manifests
 
 # Generate installation YAML
-kustomize build config/default > dist/install.yaml
+make build-installer
 ```
 
 ## Troubleshooting
